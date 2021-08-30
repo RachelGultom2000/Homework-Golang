@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"main.go/Week_5/Homework/RestAPI/structs"
 )
 
+// Get One Movie
 func (idb *InDB) GetMovie(c *gin.Context) {
 	var (
 		movie  structs.Movie
@@ -62,12 +64,13 @@ func (idb *InDB) CreateMovie(c *gin.Context) {
 	title := c.PostForm("title")
 	slug := c.PostForm("slug")
 	description := c.PostForm("description")
-	// duration := c.PostForm("duration")
+	duration := c.PostForm("duration")
+	durationMovie, _ := strconv.Atoi(duration) // convert int to string
 	image := c.PostForm("image")
 	movie.Title = title
 	movie.Slug = slug
 	movie.Description = description
-	// movie.Duration = duration
+	movie.Duration = durationMovie
 	movie.Image = image
 	idb.DB.Create(&movie)
 	result = gin.H{
@@ -82,7 +85,8 @@ func (idb *InDB) UpdateMovie(c *gin.Context) {
 	title := c.PostForm("title")
 	slug := c.PostForm("slug")
 	description := c.PostForm("description")
-	// duration := c.PostForm("duration")
+	duration := c.PostForm("duration")
+	durationMovie, _ := strconv.Atoi(duration)
 	image := c.PostForm("image")
 	var (
 		movie    structs.Movie
@@ -93,13 +97,13 @@ func (idb *InDB) UpdateMovie(c *gin.Context) {
 	err := idb.DB.First(&movie, id).Error
 	if err != nil {
 		result = gin.H{
-			"result": "data not found",
+			"result": "Data tidak ditemukan !",
 		}
 	}
 	newMovie.Title = title
 	newMovie.Slug = slug
 	newMovie.Description = description
-	// newMovie.Duration = duration
+	newMovie.Duration = durationMovie
 	newMovie.Image = image
 	err = idb.DB.Model(&movie).Updates(newMovie).Error
 	if err != nil {
